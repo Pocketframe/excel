@@ -1,0 +1,39 @@
+{
+  "name": "pocketframe/excel",
+  "description": "A Pocketframe package for Excel/CSV import and export built on PhpSpreadsheet with support for styling, multiple sheets, and chunked processing.",
+  "type": "library",
+  "license": "MIT",
+  "keywords":[
+    "pocketframe",
+    "excel",
+    "csv",
+    "phpspreadsheet",
+    "import",
+    "export"
+  ],
+  "authors": [
+    {
+      "name": "William Asaba",
+      "email": "asabawilliamdk@yahoo.com"
+    }
+  ],
+  "require": {
+    "php": "^8.2",
+    "phpoffice/phpspreadsheet": "^1.24",
+    "league/flysystem-local": "3.x-dev"
+  },
+  "autoload": {
+    "psr-4": {
+      "Pocketframe\\Excel\\": "src/"
+    }
+  },
+  "extra": {
+    "pocketframe": {
+      "packages": [
+        "Pocketframe\\Excel\\ExcelPackage"
+      ]
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
