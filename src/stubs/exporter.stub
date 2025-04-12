@@ -1,0 +1,62 @@
+<?php
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+use Pocketframe\Excel\Contracts\Exporter;
+use App\Entities\{{entity}};
+
+class {{className}} implements Exporter
+{
+    /**
+     * Provide the column headings.
+     *
+     * @return array
+     */
+    public function headings(): array
+    {
+        return ['Field 1', 'Field 2'];
+    }
+
+    /**
+     * Provide the data rows.
+     *
+     * @return array
+     */
+    public function data(): array
+    {
+        return array_map(function($entity) {
+            return [$entity->field1, $entity->field2];
+        }, {{entity}}::all()->toArray());
+    }
+
+    /**
+     * Provide the optional style rules.
+     *
+     * @return array|null
+     */
+    public function styles(): ?array
+    {
+        return [
+            'A1:B1' => [
+                'font' => ['bold' => true, 'size' => 12],
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                        'color' => ['argb' => 'FF000000']
+                    ]
+                ],
+            ]
+        ];
+    }
+
+    /**
+     * Provide multiple sheets if needed.
+     *
+     * @return array|null
+     */
+    public function sheets(): ?array
+    {
+        return null;
+    }
+}

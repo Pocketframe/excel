@@ -1,0 +1,86 @@
+<?php
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+use Pocketframe\Excel\Contracts\Exporter;
+use App\Entities\{{entity}};
+
+class {{className}} implements Exporter
+{
+    /**
+     * Provide multiple sheets for export.
+     *
+     * Each sheet definition must contain:
+     *   - 'name': Sheet name.
+     *   - 'headings': Column headings.
+     *   - 'data': Data rows.
+     *   - 'styles' (optional): Styling rules.
+     *
+     * @return array|null
+     */
+    public function sheets(): ?array
+    {
+        return [
+            [
+                'name'     => 'Sheet 1',
+                'headings' => [
+                  'Field 1',
+                  'Field 2'
+                ],
+                'data' => array_map(function($entity) {
+                    return [
+                      $entity->field1,
+                      $entity->field2
+                    ];
+                }, {{entity}}::all()->toArray()),
+                'styles'   => [
+                    'A1:B1' => [
+                        'font' => ['bold' => true, 'size' => 12],
+                        'borders' => [
+                            'allBorders' => [
+                                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                                'color' => ['argb' => 'FF000000']
+                            ]
+                        ],
+                    ]
+                ]
+            ],
+            [
+                'name'     => 'Sheet 2',
+                'headings' => ['Field 1', 'Field 2'],
+                'data'     => [], // Add data for second sheet as needed.
+            ],
+        ];
+    }
+
+    /**
+     * Fallback headings for single-sheet export (unused in multi-sheet).
+     *
+     * @return array
+     */
+    public function headings(): array
+    {
+        return [];
+    }
+
+    /**
+     * Fallback data for single-sheet export (unused in multi-sheet).
+     *
+     * @return array
+     */
+    public function data(): array
+    {
+        return [];
+    }
+
+    /**
+     * Provide style settings for the export.
+     *
+     * @return array|null
+     */
+    public function styles(): ?array
+    {
+        return null;
+    }
+}

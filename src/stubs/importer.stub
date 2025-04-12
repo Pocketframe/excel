@@ -1,0 +1,39 @@
+<?php
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+use Pocketframe\Excel\Contracts\Importer;
+use Pocketframe\PocketORM\Essentials\DataSet;
+use App\Entities\{{entity}};
+
+class {{className}} implements Importer
+{
+    /**
+     * Map a raw row into an associative array.
+     *
+     * @param array $row
+     * @return array
+     */
+    public function map(array $row): array
+    {
+        return [
+            'field1' => $row[0] ?? null,
+            'field2' => $row[1] ?? null,
+            // map additional columns...
+        ];
+    }
+
+    /**
+     * Process the mapped rows.
+     *
+     * @param array $data
+     * @return void
+     */
+    public function handle(array $data): void
+    {
+        foreach ($data as $row) {
+            (new {{entity}}())->fill($row)->save();
+        }
+    }
+}
