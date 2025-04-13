@@ -5,6 +5,7 @@ namespace {{namespace}};
 
 use Pocketframe\Excel\Contracts\ExporterInterface;
 use App\Entities\{{entity}};
+use Pocketframe\PocketORM\Database\QueryEngine;
 
 class {{className}} implements ExporterInterface
 {
@@ -15,7 +16,10 @@ class {{className}} implements ExporterInterface
      */
     public function headings(): array
     {
-        return ['Field 1', 'Field 2'];
+        return [
+          'Field 1',
+          'Field 2'
+        ];
     }
 
     /**
@@ -26,8 +30,11 @@ class {{className}} implements ExporterInterface
     public function data(): array
     {
         return array_map(function($entity) {
-            return [$entity->field1, $entity->field2];
-        }, {{entity}}::all()->toArray());
+            return [
+              $entity->field1,
+              $entity->field2
+            ];
+        }, QueryEngine::for({{entity}}::class)->get()->all());
     }
 
     /**

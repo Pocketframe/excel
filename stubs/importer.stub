@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace {{namespace}};
 
 use Pocketframe\Excel\Contracts\ImporterInterface;
-use Pocketframe\PocketORM\Essentials\DataSet;
 use App\Entities\{{entity}};
 
 class {{className}} implements ImporterInterface
@@ -18,8 +17,8 @@ class {{className}} implements ImporterInterface
     public function map(array $row): array
     {
         return [
-            'field1' => $row[0] ?? null,
-            'field2' => $row[1] ?? null,
+            // fields...
+            'name' => $row[0] ?? null,
             // map additional columns...
         ];
     }
@@ -33,7 +32,11 @@ class {{className}} implements ImporterInterface
     public function handle(array $data): void
     {
         foreach ($data as $row) {
-            (new {{entity}}())->fill($row)->save();
+            $category = new {{entity}}([
+              'name' => $row['name'],
+              // map additional columns...
+            ]);
+            $category->save();
         }
     }
 }
