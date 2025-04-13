@@ -5,6 +5,7 @@ namespace {{namespace}};
 
 use Pocketframe\Excel\Contracts\ExporterInterface;
 use App\Entities\{{entity}};
+use Pocketframe\PocketORM\Database\QueryEngine;
 
 class {{className}} implements ExporterInterface
 {
@@ -33,7 +34,7 @@ class {{className}} implements ExporterInterface
                       $entity->field1,
                       $entity->field2
                     ];
-                }, {{entity}}::all()->toArray()),
+                }, QueryEngine::for({{entity}}::class)->get()->all()),
                 'styles'   => [
                     'A1:B1' => [
                         'font' => ['bold' => true, 'size' => 12],
