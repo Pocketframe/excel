@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace {{namespace}};
 
-use Pocketframe\Excel\Contracts\Exporter;
+use Pocketframe\Excel\Contracts\ExporterInterface;
 use App\Entities\{{entity}};
 
-class {{className}} implements Exporter
+class {{className}} implements ExporterInterface
 {
     /**
      * Provide multiple sheets for export.
