@@ -147,6 +147,10 @@ class PhpSpreadsheetEngine
           $sheet->getStyle($range)->applyFromArray($styleArray);
         }
       }
+      // Allow the exporter to configure the sheet.
+      if (method_exists($exporter, 'configureSheet')) {
+        $exporter->configureSheet($sheet);
+      }
     }
 
     return $spreadsheet;
