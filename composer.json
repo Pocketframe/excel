@@ -3,6 +3,7 @@
   "description": "A Pocketframe package for Excel/CSV import and export built on PhpSpreadsheet with support for styling, multiple sheets, and chunked processing.",
   "type": "library",
   "license": "MIT",
+  "version": "1.0.1",
   "keywords":[
     "pocketframe",
     "excel",
