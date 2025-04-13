@@ -7,12 +7,22 @@ namespace Pocketframe\Excel\Mask;
 use Pocketframe\Excel\Engine\PhpSpreadsheetEngine;
 use Pocketframe\Excel\Contracts\ImporterInterface;
 use Pocketframe\Excel\Contracts\ExporterInterface;
-use Pocketframe\Storage\Facade\Storage;
+use Pocketframe\Storage\Mask\Storage;
 use Pocketframe\Http\Response\Response;
 
 class Excel
 {
   protected mixed $spreadsheet;
+
+  /**
+   * Constructor.
+   *
+   * @param mixed $spreadsheet A Spreadsheet object.
+   */
+  protected function __construct(mixed $spreadsheet)
+  {
+    $this->spreadsheet = $spreadsheet;
+  }
 
   /**
    * Retrieve an instance of the PhpSpreadsheetEngine.
@@ -33,21 +43,28 @@ class Excel
    * @param string|null $sheetName Optional sheet name to load.
    * @return void
    */
-  public static function import(string $importerClass, string $fileName, ?int $chunkSize = null, ?string $sheetName = null): void
-  {
-    /** @var Importer $importer */
+  public static function import(
+    string $importerClass,
+    string|\Pocketframe\Http\Request\UploadedFile $fileName,
+    ?int $chunkSize = null,
+    ?string $sheetName = null
+  ): void {
+    // If $fileName is an instance of UploadedFile, convert it to the real path.
+    if ($fileName instanceof \Pocketframe\Http\Request\UploadedFile) {
+      $fullPath = $fileName->getRealPath();
+    } else {
+      // For regular file paths, use concrete Storage class
+      $fullPath = (new \Pocketframe\Storage\Storage())->path($fileName);
+    }
+    // Proceed as normal.
+    /** @var ImporterInterface $importer */
     $importer = new $importerClass;
 
-    // Resolve the full file path using the Storage mask.
-    $filePath = Storage::getInstance()->path($fileName);
+    // Read the file into a DataSet.
+    $dataSet = self::engine()->read($fullPath, $chunkSize, $sheetName);
 
-    // Read the file (with chunking if set) into a DataSet.
-    $dataSet = static::engine()->read($filePath, $chunkSize, $sheetName);
-
-    // Map each raw row through the importer.
+    // Map and handle the data.
     $mappedData = $dataSet->map(fn($row) => $importer->map($row))->toArray();
-
-    // Let the importer process the full mapped data.
     $importer->handle($mappedData);
   }
 
@@ -59,21 +76,12 @@ class Excel
    */
   public static function export(string $exporterClass): self
   {
-    /** @var Exporter $exporter */
+    /** @var ExporterInterface $exporter */
     $exporter = new $exporterClass;
     $spreadsheet = static::engine()->createSpreadsheet($exporter);
     return new static($spreadsheet);
   }
 
-  /**
-   * Constructor.
-   *
-   * @param mixed $spreadsheet A Spreadsheet object.
-   */
-  protected function __construct(mixed $spreadsheet)
-  {
-    $this->spreadsheet = $spreadsheet;
-  }
 
   /**
    * Initiate a download of the generated spreadsheet.
