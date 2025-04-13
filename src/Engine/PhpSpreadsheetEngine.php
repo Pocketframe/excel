@@ -25,8 +25,13 @@ class PhpSpreadsheetEngine
     $ext = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
     if ($ext === 'csv') {
       $rows = [];
+      $skipHeader = true;
       if (($handle = fopen($filePath, 'r')) !== false) {
         while (($data = fgetcsv($handle)) !== false) {
+          if ($skipHeader) {
+            $skipHeader = false;
+            continue;
+          }
           $rows[] = $data;
         }
         fclose($handle);
@@ -46,7 +51,8 @@ class PhpSpreadsheetEngine
       $reader->setReadFilter($chunkFilter);
 
       $rows = [];
-      $startRow = 1; // PhpSpreadsheet rows are 1-indexed
+      $startRow = 1;
+      $skipHeader = true;
 
       do {
         $chunkFilter->setRows($startRow, $chunkSize);
@@ -82,7 +88,12 @@ class PhpSpreadsheetEngine
     $spreadsheet = $reader->load($filePath);
     $sheet = $spreadsheet->getActiveSheet();
     $rows = [];
+    $skipHeader = true;
     foreach ($sheet->getRowIterator() as $row) {
+      if ($skipHeader) {
+        $skipHeader = false;
+        continue;
+      }
       $cellIterator = $row->getCellIterator();
       $cellIterator->setIterateOnlyExistingCells(true);
       $cells = [];
@@ -135,6 +146,10 @@ class PhpSpreadsheetEngine
         foreach ($styles as $range => $styleArray) {
           $sheet->getStyle($range)->applyFromArray($styleArray);
         }
+      }
+      // Allow the exporter to configure the sheet.
+      if (method_exists($exporter, 'configureSheet')) {
+        $exporter->configureSheet($sheet);
       }
     }
 

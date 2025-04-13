@@ -17,8 +17,7 @@ class CreateExporterCommand implements CommandInterface
   public function __construct(array $args)
   {
     $this->args = $args;
-    // Assuming stubs are located in package root: vendor/pocketframe/excel/stubs
-    $this->stubPath = base_path('vendor/pocketframe/excel/stubs');
+    $this->stubPath = dirname(__DIR__, 3) . '/stubs';
   }
 
   public function handle(): void
@@ -40,7 +39,7 @@ class CreateExporterCommand implements CommandInterface
 
   protected function createExporter(): void
   {
-    $targetDir = base_path("app/Exports");
+    $targetDir = base_path("app/Excel/Exports");
     $targetPath = $targetDir . "/" . ucfirst($this->exporterName) . "Exporter.php";
 
     if (!is_dir($targetDir)) {
@@ -58,7 +57,7 @@ class CreateExporterCommand implements CommandInterface
       : "{$this->stubPath}/exporter.stub";
 
     $stub = file_get_contents($stubFile);
-    $namespace = 'App\\Exports';
+    $namespace = 'App\\Excel\\Exports';
     $className = ucfirst($this->exporterName) . "Exporter";
     $entity = $this->entityName ?? 'YourEntity';
 

@@ -6,7 +6,7 @@ namespace Pocketframe\Excel\Engine;
 
 use PhpOffice\PhpSpreadsheet\Reader\IReadFilter;
 
-class ChunkReadFilter
+class ChunkReadFilter implements IReadFilter
 {
   private int $startRow = 0;
   private int $endRow = 0;

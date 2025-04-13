@@ -16,8 +16,7 @@ class CreateImporterCommand implements CommandInterface
   public function __construct(array $args)
   {
     $this->args = $args;
-    // Assuming stubs are located in package root: vendor/pocketframe/excel/stubs
-    $this->stubPath = base_path('vendor/pocketframe/excel/stubs');
+    $this->stubPath = dirname(__DIR__, 3) . '/stubs';
   }
 
   public function handle(): void
@@ -39,7 +38,7 @@ class CreateImporterCommand implements CommandInterface
 
   protected function createImporter(): void
   {
-    $targetDir = base_path("app/Imports");
+    $targetDir = base_path("app/Excel/Imports");
     $targetPath = $targetDir . "/" . ucfirst($this->importerName) . "Importer.php";
 
     if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
@@ -52,7 +51,7 @@ class CreateImporterCommand implements CommandInterface
     $stub = file_get_contents("{$this->stubPath}/importer.stub");
 
     // Set namespace and className defaults.
-    $namespace = 'App\\Imports';
+    $namespace = 'App\\Excel\\Imports';
     $className = ucfirst($this->importerName) . "Importer";
     // If an entity name has been provided via --entity=, use it; otherwise provide a default placeholder.
     $entity = $this->entityName ?? 'YourEntity';

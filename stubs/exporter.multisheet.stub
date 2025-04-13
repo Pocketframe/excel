@@ -3,10 +3,11 @@ declare(strict_types=1);
 
 namespace {{namespace}};
 
-use Pocketframe\Excel\Contracts\Exporter;
+use Pocketframe\Excel\Contracts\ExporterInterface;
 use App\Entities\{{entity}};
+use Pocketframe\PocketORM\Database\QueryEngine;
 
-class {{className}} implements Exporter
+class {{className}} implements ExporterInterface
 {
     /**
      * Provide multiple sheets for export.
@@ -33,7 +34,7 @@ class {{className}} implements Exporter
                       $entity->field1,
                       $entity->field2
                     ];
-                }, {{entity}}::all()->toArray()),
+                }, QueryEngine::for({{entity}}::class)->get()->all()),
                 'styles'   => [
                     'A1:B1' => [
                         'font' => ['bold' => true, 'size' => 12],
